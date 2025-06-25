@@ -39,6 +39,12 @@ RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 #RUN  tdnf install azure-cli
 #FROM mcr.microsoft.com/azure-cli:cbl-mariner2.0
 #RUN docker run -it mcr.microsoft.com/azure-cli:2.62.0-cbl-mariner2.0
-RUN az login --tenant ${TENANT_ID}
+#RUN az login --tenant ${TENANT_ID}
 #RUN az account show
 RUN az help
+
+
+# for local run - create a known key ('test') for x-functions-key
+ENV    AzureWebJobsSecretStorageType=files
+RUN mkdir -p /azure-functions-host/Secrets/
+RUN echo '{"masterKey":{"name":"master","value":"test","encrypted":false},"functionKeys":[]}' > /azure-functions-host/Secrets/host.json
