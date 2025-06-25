@@ -1,5 +1,5 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-ARG TENANT_ID
+#ARG TENANT_ID
 #ENV TENANT_ID=$TENANT_ID
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0 AS base
@@ -24,27 +24,27 @@ RUN dotnet publish "./DockerFunction.csproj" -c $BUILD_CONFIGURATION -o /app/pub
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
-ARG TENANT_ID
-ENV TENANT_ID=$TENANT_ID
+#ARG TENANT_ID
+#ENV TENANT_ID=$TENANT_ID
 WORKDIR /home/site/wwwroot
 COPY --from=publish /app/publish .
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
 #RUN powershell.exe -Command $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item .\AzureCLI.msi
-RUN apt-get -y update; apt-get -y install curl
+#RUN apt-get -y update; apt-get -y install curl
 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+#RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 #RUN  tdnf install ca-certificates
 #RUN  tdnf install azure-cli
 #FROM mcr.microsoft.com/azure-cli:cbl-mariner2.0
 #RUN docker run -it mcr.microsoft.com/azure-cli:2.62.0-cbl-mariner2.0
 #RUN az login --tenant ${TENANT_ID}
 #RUN az account show
-RUN az help
+#RUN az help
 
 
 # for local run - create a known key ('test') for x-functions-key
-ENV    AzureWebJobsSecretStorageType=files
-RUN mkdir -p /azure-functions-host/Secrets/
-RUN echo '{"masterKey":{"name":"master","value":"test","encrypted":false},"functionKeys":[]}' > /azure-functions-host/Secrets/host.json
+#ENV    AzureWebJobsSecretStorageType=files
+#RUN mkdir -p /azure-functions-host/Secrets/
+#RUN echo '{"masterKey":{"name":"master","value":"test","encrypted":false},"functionKeys":[]}' > /azure-functions-host/Secrets/host.json
